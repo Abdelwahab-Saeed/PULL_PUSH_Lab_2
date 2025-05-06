@@ -1,0 +1,65 @@
+<!doctype html>
+<html>
+<head>
+  <title>websocket reconnection</title>
+  <style>
+    #status { font: bold 14px sans-serif; padding: 4px 8px; border-radius: 4px;}
+    .connected { background: green; color: white; }
+    .disconnected { background: red; color: white; }
+  </style>
+</head>
+<body>
+
+    <!-- heading -->
+  <h2>websocket client</h2>
+
+  <!-- status -->
+  <p>status: <span id="status" class="disconnected">disconnected</span></p>
+  <div id="log"></div>
+
+  <script>
+
+    let ws;
+    // get html
+    const status = document.getElementById("status");
+    const log = document.getElementById("log");
+
+    // /set status
+    function setStatus(ok) {
+        status.textContent = ok ? "connected" : "disconnected";
+        status.className = ok ? "connected" : "disconnected";
+    }
+
+    // connect to server
+    function connect() {
+
+        // using websocker on port 8000
+        ws = new WebSocket("ws://localhost:8080");
+
+        // on open sessin....
+        ws.onopen = () => setStatus(true);
+
+        // while session recieving....
+        ws.onmessage = e => {
+        const p = document.createElement("p");
+        p.textContent = "msg: " + e.data.toLowerCase();
+        log.appendChild(p);
+        };
+
+        // on disconnect the seccison
+        ws.onclose = () => {
+        setStatus(false);
+
+        // try reconnect
+        setTimeout(connect, 3000);
+        };
+
+        ws.onerror = () => ws.close();
+    }
+
+    //ACTION
+    connect();
+
+  </script>
+</body>
+</html>

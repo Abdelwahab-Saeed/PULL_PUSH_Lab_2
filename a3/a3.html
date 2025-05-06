@@ -1,0 +1,49 @@
+<!doctype html>
+<html>
+<head>
+
+<title>stock dashboard</title>
+<style>
+    body { font-family: sans-serif; }
+    table { width: 60%; border-collapse: collapse; margin-top: 20px; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
+    th { background: #eee; }
+</style>
+
+</head>
+
+
+<body>
+    <h2>live stock dashboard</h2>
+
+    <table>
+    <thead><tr><th>stock</th><th>price</th><th>time</th></tr></thead>
+    <tbody id="stock-table"></tbody>
+    </table>
+
+    <script>
+
+        //  access html + connect to server
+        const table = document.getElementById("stock-table");
+        const socket = new WebSocket("ws://localhost:8080");
+
+        // reciviing frmo server
+        socket.onmessage = (e) => {
+
+            //  convet what stringfied
+            const data = JSON.parse(e.data);
+
+            // empty table
+            table.innerHTML = '';
+
+            // 
+            data.forEach(stock => {
+            const row = `<tr><td>${stock.name}</td><td>$${stock.price}</td><td>${stock.time}</td></tr>`;
+            table.innerHTML += row;
+            });
+        };
+    </script>
+</body>
+
+
+</html>

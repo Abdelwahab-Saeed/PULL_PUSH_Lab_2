@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<body>
+    <h1>live notifications</h1>
+    <p id="notifications"></p>
+
+    <script>
+        // source server + access html
+        const source = new EventSource("sse_server.php");
+        const notificationsDiv = document.getElementById("notifications");
+
+        // on reach message from server do...
+        source.onmessage = function(event) {
+            const p = document.createElement("p");
+            p.textContent = event.data;
+            notificationsDiv.appendChild(p);
+        };
+    </script>
+</body>
+</html>
